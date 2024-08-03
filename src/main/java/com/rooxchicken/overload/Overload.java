@@ -115,6 +115,7 @@ public class Overload extends JavaPlugin implements Listener
 
     private void addRecipes()
     {
+        itemManager.registerRecipes();
         {
         ItemStack item = new ItemStack(Material.GRAY_DYE);
 

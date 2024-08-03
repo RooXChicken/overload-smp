@@ -7,13 +7,16 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -38,6 +41,11 @@ public class ItemManager implements Listener
     public NamespacedKey golemsAidCooldownKey;
     public NamespacedKey vitalSurgeCooldownKey;
     public NamespacedKey pullRainCooldownKey;
+
+    private ShapedRecipe chronoStasisRecipe;
+    private ShapedRecipe golemsAidRecipe;
+    private ShapedRecipe vitalSurgeRecipe;
+    private ShapedRecipe pullRainRecipe;
 
     @EventHandler
     public void useItem(PlayerInteractEvent event)
@@ -202,6 +210,8 @@ public class ItemManager implements Listener
         {ItemMeta meta = star.getItemMeta();
         meta.setDisplayName("§e§l§oStar");
         meta.setCustomModelData(1);
+        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        meta.addEnchant(Enchantment.DURABILITY, 1, true);
         star.setItemMeta(meta);}
 
         speedEnhancement = new ItemStack(Material.GRAY_DYE);
@@ -209,6 +219,8 @@ public class ItemManager implements Listener
         {ItemMeta meta = speedEnhancement.getItemMeta();
         meta.setDisplayName("§7§l§oSpeed Enhancement");
         meta.setCustomModelData(1);
+        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        meta.addEnchant(Enchantment.DURABILITY, 1, true);
         speedEnhancement.setItemMeta(meta);}
 
         enduranceEnhancement = new ItemStack(Material.LIGHT_BLUE_DYE);
@@ -216,6 +228,8 @@ public class ItemManager implements Listener
         {ItemMeta meta = enduranceEnhancement.getItemMeta();
         meta.setDisplayName("§b§l§oEndurance Enhancement");
         meta.setCustomModelData(1);
+        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        meta.addEnchant(Enchantment.DURABILITY, 1, true);
         enduranceEnhancement.setItemMeta(meta);}
 
         toughnessEnhancement = new ItemStack(Material.YELLOW_DYE);
@@ -223,6 +237,8 @@ public class ItemManager implements Listener
         {ItemMeta meta = toughnessEnhancement.getItemMeta();
         meta.setDisplayName("§e§l§oToughness Enhancement");
         meta.setCustomModelData(1);
+        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        meta.addEnchant(Enchantment.DURABILITY, 1, true);
         toughnessEnhancement.setItemMeta(meta);}
 
         chronoStasis = new ItemStack(Material.CLOCK);
@@ -230,6 +246,8 @@ public class ItemManager implements Listener
         {ItemMeta meta = chronoStasis.getItemMeta();
         meta.setDisplayName("§e§l§oChrono Stasis");
         meta.setCustomModelData(1);
+        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        meta.addEnchant(Enchantment.DURABILITY, 1, true);
         chronoStasis.setItemMeta(meta);}
 
         golemsAid = new ItemStack(Material.IRON_INGOT);
@@ -237,6 +255,8 @@ public class ItemManager implements Listener
         {ItemMeta meta = golemsAid.getItemMeta();
         meta.setDisplayName("§f§l§oGolem's Aid");
         meta.setCustomModelData(1);
+        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        meta.addEnchant(Enchantment.DURABILITY, 1, true);
         golemsAid.setItemMeta(meta);}
 
         vitalSurge = new ItemStack(Material.IRON_NUGGET);
@@ -244,6 +264,8 @@ public class ItemManager implements Listener
         {ItemMeta meta = vitalSurge.getItemMeta();
         meta.setDisplayName("§c§l§oVital Surge");
         meta.setCustomModelData(1);
+        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        meta.addEnchant(Enchantment.DURABILITY, 1, true);
         vitalSurge.setItemMeta(meta);}
 
         pullRain = new ItemStack(Material.STICK);
@@ -251,6 +273,50 @@ public class ItemManager implements Listener
         {ItemMeta meta = pullRain.getItemMeta();
         meta.setDisplayName("§b§l§oPull Rain");
         meta.setCustomModelData(1);
+        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        meta.addEnchant(Enchantment.DURABILITY, 1, true);
         pullRain.setItemMeta(meta);}
+    }
+
+    public void registerRecipes()
+    {
+        {NamespacedKey key = new NamespacedKey(plugin, "chronoStasisRecipe");
+        chronoStasisRecipe = new ShapedRecipe(key, chronoStasis);
+        chronoStasisRecipe.shape("SBS", "BCB", "SBS");
+
+        chronoStasisRecipe.setIngredient('S', Material.SOUL_TORCH);
+        chronoStasisRecipe.setIngredient('B', Material.BLUE_ICE);
+        chronoStasisRecipe.setIngredient('C', Material.CLOCK);
+
+        Bukkit.addRecipe(chronoStasisRecipe);}
+
+        {NamespacedKey key = new NamespacedKey(plugin, "golemsAidRecipe");
+        golemsAidRecipe = new ShapedRecipe(key, chronoStasis);
+        golemsAidRecipe.shape("III", "GGG", "III");
+
+        golemsAidRecipe.setIngredient('I', Material.IRON_BLOCK);
+        golemsAidRecipe.setIngredient('G', Material.GOLDEN_APPLE);
+
+        Bukkit.addRecipe(golemsAidRecipe);}
+
+        {NamespacedKey key = new NamespacedKey(plugin, "vitalSurgeRecipe");
+        vitalSurgeRecipe = new ShapedRecipe(key, chronoStasis);
+        vitalSurgeRecipe.shape("FGF", "GRG", "FGF");
+
+        vitalSurgeRecipe.setIngredient('F', Material.FERMENTED_SPIDER_EYE);
+        vitalSurgeRecipe.setIngredient('G', Material.GOLDEN_APPLE);
+        vitalSurgeRecipe.setIngredient('R', Material.REDSTONE_BLOCK);
+
+        Bukkit.addRecipe(vitalSurgeRecipe);}
+
+        // {NamespacedKey key = new NamespacedKey(plugin, "pullRainRecipe");
+        // pullRainRecipe = new ShapedRecipe(key, chronoStasis);
+        // pullRainRecipe.shape("SBS", "BCB", "SBS");
+
+        // pullRainRecipe.setIngredient('S', Material.SOUL_TORCH);
+        // pullRainRecipe.setIngredient('B', Material.BLUE_ICE);
+        // pullRainRecipe.setIngredient('C', Material.CLOCK);
+
+        // Bukkit.addRecipe(pullRainRecipe);}
     }
 }
