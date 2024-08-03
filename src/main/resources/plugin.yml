@@ -13,3 +13,6 @@ commands:
    giveitems:
       description: Gives the items
       usage: /giveitems
+   resetcooldown:
+      description: Resets the player's cooldown
+      usage: /resetcooldown

@@ -33,6 +33,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.RayTraceResult;
 import com.google.common.base.Predicate;
 import com.rooxchicken.overload.Commands.GiveItems;
+import com.rooxchicken.overload.Commands.ResetCooldown;
 import com.rooxchicken.overload.Commands.SetStars;
 import com.rooxchicken.overload.Commands.Withdraw;
 import com.rooxchicken.overload.Events.HandleAbilities;
@@ -41,7 +42,7 @@ import com.rooxchicken.overload.Tasks.Task;
 
 public class Overload extends JavaPlugin implements Listener
 {
-    public static final int STAR_MAX = 3;
+    public static final int STAR_MAX = 2;
     public static NamespacedKey starsKey;
     public static NamespacedKey overloadLengthKey;
     public static NamespacedKey upgradeKey;
@@ -54,12 +55,14 @@ public class Overload extends JavaPlugin implements Listener
     private ShapedRecipe upgrade1;
     private ShapedRecipe upgrade2;
     private ShapedRecipe upgrade3;
+    public ItemManager itemManager;
 
     private List<String> blockedCommands = new ArrayList<>();
 
     @Override
     public void onEnable()
     {
+        itemManager = new ItemManager(this);
         abilities = new HandleAbilities(this);
         tasks = new ArrayList<Task>();
         tasks.add(new ShowStars(this));
@@ -76,6 +79,7 @@ public class Overload extends JavaPlugin implements Listener
         this.getCommand("setstars").setExecutor(new SetStars(this));
         this.getCommand("withdraw").setExecutor(new Withdraw(this));
         this.getCommand("giveitems").setExecutor(new GiveItems(this));
+        this.getCommand("resetcooldown").setExecutor(new ResetCooldown(this));
 
         getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable()
         {
@@ -272,15 +276,11 @@ public class Overload extends JavaPlugin implements Listener
 
     public void giveStar(Player player, int count)
     {
-        ItemStack star = new ItemStack(Material.NETHER_STAR);
-
-        ItemMeta meta = star.getItemMeta();
-        meta.setDisplayName("§e§l§oStar");
-        meta.setCustomModelData(1);
-        star.setItemMeta(meta);
-
-        player.getInventory().addItem(star);
-        //Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "give " + player.getName() + " nether_star{display:{Name:'{\"text\":\"Star\",\"color\":\"yellow\",\"bold\":true,\"italic\":true}'}} " + count);
+        for(int i = 0; i < count; i++)
+        if(player.getInventory().firstEmpty() != -1)
+            player.getInventory().addItem(itemManager.star);
+        else
+            player.getWorld().dropItemNaturally(player.getLocation(), itemManager.star);
     }
 
     public boolean isOverloaded(Player player)
@@ -299,59 +299,6 @@ public class Overload extends JavaPlugin implements Listener
         if(killer != null)
         {
             addStar(killer);
-        }
-    }
-
-    @EventHandler
-    public void useItem(PlayerInteractEvent event)
-    {
-        if(event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK)
-            return;
-
-        Player player = event.getPlayer();
-        ItemStack item = event.getItem();
-
-        //getLogger().info(item.getItemMeta().getDisplayName());
-
-        if(item != null && item.hasItemMeta())
-        {
-            boolean used = false;
-            PersistentDataContainer data = player.getPersistentDataContainer();
-            if(item.getItemMeta().getDisplayName().equals("§e§l§oStar"))
-            {
-                int stars = data.get(starsKey, PersistentDataType.INTEGER) + 1;
-                if(stars <= STAR_MAX)
-                {
-                    data.set(starsKey, PersistentDataType.INTEGER, stars);
-                    used = true;
-                }
-            }
-
-            int upgrade = data.get(upgradeKey, PersistentDataType.INTEGER);
-
-            if(item.getItemMeta().getDisplayName().equals("§7§l§oSpeed Enhancement") && upgrade < 1)
-            {
-                data.set(upgradeKey, PersistentDataType.INTEGER, 1);
-                used = true;
-            }
-
-            if(item.getItemMeta().getDisplayName().equals("§b§l§oEndurance Enhancement") && upgrade < 2)
-            {
-                data.set(upgradeKey, PersistentDataType.INTEGER, 2);
-                used = true;
-            }
-
-            if(item.getItemMeta().getDisplayName().equals("§e§l§oToughness Enhancement") && upgrade < 3)
-            {
-                data.set(upgradeKey, PersistentDataType.INTEGER, 3);
-                used = true;
-            }
-
-            if(used)
-            {
-                item.setAmount(item.getAmount() - 1);
-                player.playSound(player, Sound.ENTITY_ARROW_HIT_PLAYER, 1, 1);
-            }
         }
     }
 

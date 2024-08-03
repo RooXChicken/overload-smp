@@ -26,36 +26,25 @@ public class GiveItems implements CommandExecutor
         if(sender.isOp())
         {
             Player player = Bukkit.getPlayer(sender.getName());
-            {ItemStack item = new ItemStack(Material.GRAY_DYE);
-            ItemMeta meta = item.getItemMeta();
-            meta.setDisplayName("§7§l§oSpeed Enhancement");
-            meta.setCustomModelData(1);
-            item.setItemMeta(meta);
-
-            player.getInventory().addItem(item);}
-
-            {ItemStack item = new ItemStack(Material.LIGHT_BLUE_DYE);
-
-            ItemMeta meta = item.getItemMeta();
-            meta.setDisplayName("§b§l§oEndurance Enhancement");
-            meta.setCustomModelData(1);
-            item.setItemMeta(meta);
-
-            player.getInventory().addItem(item);}
-
-            {ItemStack item = new ItemStack(Material.YELLOW_DYE);
-
-            ItemMeta meta = item.getItemMeta();
-            meta.setDisplayName("§e§l§oToughness Enhancement");
-            meta.setCustomModelData(1);
-            item.setItemMeta(meta);
-
-            player.getInventory().addItem(item);}
-
-            plugin.giveStar(player, 1);
+            giveItem(player, plugin.itemManager.star);
+            giveItem(player, plugin.itemManager.speedEnhancement);
+            giveItem(player, plugin.itemManager.enduranceEnhancement);
+            giveItem(player, plugin.itemManager.toughnessEnhancement);
+            giveItem(player, plugin.itemManager.chronoStasis);
+            giveItem(player, plugin.itemManager.golemsAid);
+            giveItem(player, plugin.itemManager.vitalSurge);
+            giveItem(player, plugin.itemManager.pullRain);
         }
 
         return true;
+    }
+
+    private void giveItem(Player player, ItemStack item)
+    {
+        if(player.getInventory().firstEmpty() != -1)
+            player.getInventory().addItem(item);
+        else
+            player.getWorld().dropItemNaturally(player.getLocation(), item);
     }
 
 }

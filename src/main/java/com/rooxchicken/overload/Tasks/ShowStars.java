@@ -31,6 +31,7 @@ public class ShowStars extends Task
     {
         for(Player player : Bukkit.getOnlinePlayers())
         {
+            plugin.itemManager.tickPlayer(player);
             PersistentDataContainer data = player.getPersistentDataContainer();
             int stars = data.get(Overload.starsKey, PersistentDataType.INTEGER);
             int overloadTime = data.get(Overload.overloadLengthKey, PersistentDataType.INTEGER);
