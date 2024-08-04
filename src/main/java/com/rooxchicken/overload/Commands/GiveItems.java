@@ -30,6 +30,8 @@ public class GiveItems implements CommandExecutor
             giveItem(player, plugin.itemManager.speedEnhancement);
             giveItem(player, plugin.itemManager.enduranceEnhancement);
             giveItem(player, plugin.itemManager.toughnessEnhancement);
+            giveItem(player, plugin.itemManager.bloodLossUpgrade);
+            giveItem(player, plugin.itemManager.abyssUpgrade);
             giveItem(player, plugin.itemManager.chronoStasis);
             giveItem(player, plugin.itemManager.golemsAid);
             giveItem(player, plugin.itemManager.vitalSurge);

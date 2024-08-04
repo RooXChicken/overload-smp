@@ -35,10 +35,10 @@ public class FreezeEntities extends Task
         {
             for(Entity entity : world.getEntities())
             {
+                if(entity instanceof Player)
+                    ((Player)entity).playSound(entity.getLocation(), Sound.BLOCK_RESPAWN_ANCHOR_DEPLETE, 1.0f, 0.9f);
                 if(entity == player)
                     continue;
-                if(entity instanceof Player)
-                    ((Player)entity).playSound(entity.getLocation(), Sound.BLOCK_RESPAWN_ANCHOR_DEPLETE, 1.0f, 0.6f);
                 entityLocationMap.put(entity, entity.getLocation().clone());
             }
         }

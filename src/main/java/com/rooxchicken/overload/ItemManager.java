@@ -36,6 +36,8 @@ public class ItemManager implements Listener
     public ItemStack golemsAid;
     public ItemStack vitalSurge;
     public ItemStack pullRain;
+    public ItemStack abyssUpgrade;
+    public ItemStack bloodLossUpgrade;
 
     public NamespacedKey chronoStasisCooldownKey;
     public NamespacedKey golemsAidCooldownKey;
@@ -46,6 +48,9 @@ public class ItemManager implements Listener
     private ShapedRecipe golemsAidRecipe;
     private ShapedRecipe vitalSurgeRecipe;
     private ShapedRecipe pullRainRecipe;
+
+    public ShapedRecipe bloodLossRecipe;
+    public ShapedRecipe abyssRecipe;
 
     @EventHandler
     public void useItem(PlayerInteractEvent event)
@@ -81,7 +86,7 @@ public class ItemManager implements Listener
                         LivingEntity entity = (LivingEntity)o;
                         entity.setVelocity(player.getLocation().clone().subtract(entity.getLocation()).toVector().multiply(0.3));
 
-                        entity.getWorld().playSound(entity.getLocation(), Sound.ENTITY_BAT_TAKEOFF, 1.0f, 2.0f);
+                        entity.getWorld().playSound(entity.getLocation(), Sound.ENTITY_BAT_TAKEOFF, 1.0f, 1.0f);
                     }
                 }
                 used = true;
@@ -101,6 +106,7 @@ public class ItemManager implements Listener
                     return;
                 player.getWorld().spawnParticle(Particle.REDSTONE, player.getLocation().clone().add(0,1,0), 100, 0.3, 0.5, 0.3, new Particle.DustOptions(Color.RED, 1.0f));
                 player.setHealth(Math.min(player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue(), player.getHealth() + player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue()/2.0));
+                player.playSound(player.getLocation(), Sound.ENTITY_ZOMBIE_VILLAGER_CURE, 0.5f, 2.0f);
                 used = true;
             }
 
@@ -129,6 +135,18 @@ public class ItemManager implements Listener
             if(item.getItemMeta().equals(toughnessEnhancement.getItemMeta()) && upgrade < 3)
             {
                 data.set(Overload.upgradeKey, PersistentDataType.INTEGER, 3);
+                used = true;
+            }
+
+            if(item.getItemMeta().equals(bloodLossUpgrade.getItemMeta()) && !(data.has(Overload.bloodLossKey, PersistentDataType.BOOLEAN) && data.get(Overload.bloodLossKey, PersistentDataType.BOOLEAN)))
+            {
+                data.set(Overload.bloodLossKey, PersistentDataType.BOOLEAN, true);
+                used = true;
+            }
+
+            if(item.getItemMeta().equals(abyssUpgrade.getItemMeta()) && !(data.has(Overload.abyssKey, PersistentDataType.BOOLEAN) && data.get(Overload.abyssKey, PersistentDataType.BOOLEAN)))
+            {
+                data.set(Overload.abyssKey, PersistentDataType.BOOLEAN, true);
                 used = true;
             }
 
@@ -276,6 +294,24 @@ public class ItemManager implements Listener
         meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         meta.addEnchant(Enchantment.DURABILITY, 1, true);
         pullRain.setItemMeta(meta);}
+
+        abyssUpgrade = new ItemStack(Material.BLACK_DYE);
+
+        {ItemMeta meta = abyssUpgrade.getItemMeta();
+        meta.setDisplayName("§8§l§oAbyss Enhancement");
+        meta.setCustomModelData(1);
+        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        meta.addEnchant(Enchantment.DURABILITY, 1, true);
+        abyssUpgrade.setItemMeta(meta);}
+
+        bloodLossUpgrade = new ItemStack(Material.RED_DYE);
+
+        {ItemMeta meta = bloodLossUpgrade.getItemMeta();
+        meta.setDisplayName("§4§l§oBlood Loss Enhancement");
+        meta.setCustomModelData(1);
+        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        meta.addEnchant(Enchantment.DURABILITY, 1, true);
+        bloodLossUpgrade.setItemMeta(meta);}
     }
 
     public void registerRecipes()
@@ -291,7 +327,7 @@ public class ItemManager implements Listener
         Bukkit.addRecipe(chronoStasisRecipe);}
 
         {NamespacedKey key = new NamespacedKey(plugin, "golemsAidRecipe");
-        golemsAidRecipe = new ShapedRecipe(key, chronoStasis);
+        golemsAidRecipe = new ShapedRecipe(key, golemsAid);
         golemsAidRecipe.shape("III", "GGG", "III");
 
         golemsAidRecipe.setIngredient('I', Material.IRON_BLOCK);
@@ -300,7 +336,7 @@ public class ItemManager implements Listener
         Bukkit.addRecipe(golemsAidRecipe);}
 
         {NamespacedKey key = new NamespacedKey(plugin, "vitalSurgeRecipe");
-        vitalSurgeRecipe = new ShapedRecipe(key, chronoStasis);
+        vitalSurgeRecipe = new ShapedRecipe(key, vitalSurge);
         vitalSurgeRecipe.shape("FGF", "GRG", "FGF");
 
         vitalSurgeRecipe.setIngredient('F', Material.FERMENTED_SPIDER_EYE);
@@ -309,14 +345,35 @@ public class ItemManager implements Listener
 
         Bukkit.addRecipe(vitalSurgeRecipe);}
 
-        // {NamespacedKey key = new NamespacedKey(plugin, "pullRainRecipe");
-        // pullRainRecipe = new ShapedRecipe(key, chronoStasis);
-        // pullRainRecipe.shape("SBS", "BCB", "SBS");
+        {NamespacedKey key = new NamespacedKey(plugin, "pullRainRecipe");
+        pullRainRecipe = new ShapedRecipe(key, pullRain);
+        pullRainRecipe.shape("WWW", "DDD", "BBB");
 
-        // pullRainRecipe.setIngredient('S', Material.SOUL_TORCH);
-        // pullRainRecipe.setIngredient('B', Material.BLUE_ICE);
-        // pullRainRecipe.setIngredient('C', Material.CLOCK);
+        pullRainRecipe.setIngredient('W', Material.WATER_BUCKET);
+        pullRainRecipe.setIngredient('D', Material.DIAMOND);
+        pullRainRecipe.setIngredient('B', Material.BOOK);
 
-        // Bukkit.addRecipe(pullRainRecipe);}
+        Bukkit.addRecipe(pullRainRecipe);}
+
+        {NamespacedKey key = new NamespacedKey(plugin, "bloodLossRecipe");
+        bloodLossRecipe = new ShapedRecipe(key, bloodLossUpgrade);
+        bloodLossRecipe.shape("RDR", "DxR", "RDR");
+
+        bloodLossRecipe.setIngredient('R', Material.REDSTONE_BLOCK);
+        bloodLossRecipe.setIngredient('D', Material.DIAMOND);
+        bloodLossRecipe.setIngredient('x', Material.NETHER_STAR);
+
+        Bukkit.addRecipe(bloodLossRecipe);}
+
+        {NamespacedKey key = new NamespacedKey(plugin, "abyssRecipe");
+        abyssRecipe = new ShapedRecipe(key, abyssUpgrade);
+        abyssRecipe.shape("ODO", "TxT", "ODO");
+
+        abyssRecipe.setIngredient('O', Material.OBSIDIAN);
+        abyssRecipe.setIngredient('D', Material.DIAMOND_BLOCK);
+        abyssRecipe.setIngredient('T', Material.TOTEM_OF_UNDYING);
+        abyssRecipe.setIngredient('x', Material.NETHER_STAR);
+
+        Bukkit.addRecipe(abyssRecipe);}
     }
 }

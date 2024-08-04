@@ -46,6 +46,14 @@ public class Overload extends JavaPlugin implements Listener
     public static NamespacedKey starsKey;
     public static NamespacedKey overloadLengthKey;
     public static NamespacedKey upgradeKey;
+
+    public static NamespacedKey bloodLossKey;
+    public static NamespacedKey bloodLossActiveKey;
+    public static NamespacedKey bloodLossCooldownKey;
+    public static NamespacedKey abyssKey;
+    public static NamespacedKey abyssActiveKey;
+    public static NamespacedKey abyssCooldownKey;
+
     public static NamespacedKey overloadUpgradeKey;
     public static NamespacedKey launchCooldownKey;
     
@@ -72,6 +80,14 @@ public class Overload extends JavaPlugin implements Listener
         upgradeKey = new NamespacedKey(this, "upgrade");
         overloadUpgradeKey = new NamespacedKey(this, "overloadUpgrade");
         launchCooldownKey = new NamespacedKey(this, "launchCooldown");
+
+        bloodLossKey = new NamespacedKey(this, "bloodLoss");
+        bloodLossActiveKey = new NamespacedKey(this, "bloodLossActive");
+        abyssKey = new NamespacedKey(this, "abyss");
+        abyssActiveKey = new NamespacedKey(this, "abyssActive");
+
+        bloodLossCooldownKey = new NamespacedKey(this, "bloodLossCooldown");
+        abyssCooldownKey = new NamespacedKey(this, "abyssCooldown");
 
         getServer().getPluginManager().registerEvents(this, this);
         getServer().getPluginManager().registerEvents(abilities, this);
@@ -183,45 +199,61 @@ public class Overload extends JavaPlugin implements Listener
             return;
 
         ItemStack star = new ItemStack(Material.NETHER_STAR);
+        star.setItemMeta(itemManager.star.getItemMeta());
 
-        ItemMeta meta = star.getItemMeta();
-        meta.setDisplayName("§e§l§oStar");
-        star.setItemMeta(meta);
         if(event.getRecipe().getResult().getType() == Material.BEACON)
         {
             ItemStack compare = event.getInventory().getItem(5);
 
-            if(compare.hasItemMeta() || compare.getItemMeta().getDisplayName().equals(star.getItemMeta().getDisplayName()))
+            if(compare.hasItemMeta() || compare.getItemMeta().equals(star.getItemMeta()))
                 event.getInventory().setResult(new ItemStack(Material.AIR));
         }
 
         if(!event.getRecipe().getResult().hasItemMeta())
             return;
 
-        if(event.getRecipe().getResult().getItemMeta().getDisplayName().equals(upgrade1.getResult().getItemMeta().getDisplayName()))
+        if(event.getRecipe().getResult().getItemMeta().equals(upgrade1.getResult().getItemMeta()))
         {
             star.setAmount(1);
             ItemStack compare = event.getInventory().getItem(5);
 
-            if(!(compare.hasItemMeta() && compare.getItemMeta().getDisplayName().equals(star.getItemMeta().getDisplayName()) && compare.getAmount() == star.getAmount()))
+            if(!(compare.hasItemMeta() && compare.getItemMeta().equals(star.getItemMeta()) && compare.getAmount() == star.getAmount()))
                 event.getInventory().setResult(new ItemStack(Material.AIR));
         }
 
-        if(event.getRecipe().getResult().getItemMeta().getDisplayName().equals(upgrade2.getResult().getItemMeta().getDisplayName()))
+        if(event.getRecipe().getResult().getItemMeta().equals(itemManager.abyssRecipe.getResult().getItemMeta()))
+        {
+            star.setAmount(1);
+            ItemStack compare = event.getInventory().getItem(5);
+
+            if(!(compare.hasItemMeta() && compare.getItemMeta().equals(star.getItemMeta()) && compare.getAmount() == star.getAmount()))
+                event.getInventory().setResult(new ItemStack(Material.AIR));
+        }
+
+        if(event.getRecipe().getResult().getItemMeta().equals(itemManager.bloodLossRecipe.getResult().getItemMeta()))
+        {
+            star.setAmount(1);
+            ItemStack compare = event.getInventory().getItem(5);
+
+            if(!(compare.hasItemMeta() && compare.getItemMeta().equals(star.getItemMeta()) && compare.getAmount() == star.getAmount()))
+                event.getInventory().setResult(new ItemStack(Material.AIR));
+        }
+
+        if(event.getRecipe().getResult().getItemMeta().equals(upgrade2.getResult().getItemMeta()))
         {
             star.setAmount(2);
             ItemStack compare = event.getInventory().getItem(5);
 
-            if(!(compare.hasItemMeta() && compare.getItemMeta().getDisplayName().equals(star.getItemMeta().getDisplayName()) && compare.getAmount() == star.getAmount()))
+            if(!(compare.hasItemMeta() && compare.getItemMeta().equals(star.getItemMeta()) && compare.getAmount() == star.getAmount()))
                 event.getInventory().setResult(new ItemStack(Material.AIR));
         }
 
-        if(event.getRecipe().getResult().getItemMeta().getDisplayName().equals(upgrade3.getResult().getItemMeta().getDisplayName()))
+        if(event.getRecipe().getResult().getItemMeta().equals(upgrade3.getResult().getItemMeta()))
         {
             star.setAmount(3);
             ItemStack compare = event.getInventory().getItem(5);
 
-            if(!(compare.hasItemMeta() && compare.getItemMeta().getDisplayName().equals(star.getItemMeta().getDisplayName()) && compare.getAmount() == star.getAmount()))
+            if(!(compare.hasItemMeta() && compare.getItemMeta().equals(star.getItemMeta()) && compare.getAmount() == star.getAmount()))
                 event.getInventory().setResult(new ItemStack(Material.AIR));
         }
     }

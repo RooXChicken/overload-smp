@@ -36,15 +36,28 @@ public class HandleAbilities implements Listener
     public void useOverload(PlayerSwapHandItemsEvent event)
     {
         Player player = event.getPlayer();
-        if(player.isSneaking() && plugin.getStars(player) == Overload.STAR_MAX)
+        PersistentDataContainer data = player.getPersistentDataContainer();
+
+        if(player.isSneaking() && plugin.getStars(player) == Overload.STAR_MAX && data.get(Overload.overloadLengthKey, PersistentDataType.INTEGER) <= 0)
         {
+            if(!data.has(Overload.abyssKey, PersistentDataType.BOOLEAN))
+                data.set(Overload.abyssKey, PersistentDataType.BOOLEAN, false);
+            if(!data.has(Overload.bloodLossKey, PersistentDataType.BOOLEAN))
+                data.set(Overload.bloodLossKey, PersistentDataType.BOOLEAN, false);
             player.getWorld().strikeLightningEffect(player.getLocation());
             player.getWorld().spawnParticle(Particle.ELECTRIC_SPARK, player.getLocation().clone().add(0, 1, 0), 150, 0.2, 1, 0.2);
             setOverload(player);
-            PersistentDataContainer data = player.getPersistentDataContainer();
             data.set(Overload.overloadUpgradeKey, PersistentDataType.INTEGER, data.get(Overload.upgradeKey, PersistentDataType.INTEGER));
             data.set(Overload.upgradeKey, PersistentDataType.INTEGER, 0);
             data.set(Overload.launchCooldownKey, PersistentDataType.INTEGER, 0);
+            data.set(Overload.bloodLossCooldownKey, PersistentDataType.INTEGER, 0);
+            data.set(Overload.abyssCooldownKey, PersistentDataType.INTEGER, 0);
+
+            data.set(Overload.abyssActiveKey, PersistentDataType.BOOLEAN, data.get(Overload.abyssKey, PersistentDataType.BOOLEAN));
+            data.set(Overload.bloodLossActiveKey, PersistentDataType.BOOLEAN, data.get(Overload.bloodLossKey, PersistentDataType.BOOLEAN));
+
+            data.set(Overload.abyssKey, PersistentDataType.BOOLEAN, false);
+            data.set(Overload.bloodLossKey, PersistentDataType.BOOLEAN, false);
             event.setCancelled(true);
         }
     }
