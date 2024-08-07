@@ -57,7 +57,7 @@ public class Abyss extends Task
             }
         }
 
-        if(++t > 30*20)
+        if(++t > 10*20)
         {
             cancel = true;
         }

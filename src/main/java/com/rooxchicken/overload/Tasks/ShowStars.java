@@ -201,12 +201,12 @@ public class ShowStars extends Task implements Listener
         {
             case LEFT_CLICK_AIR:
             case LEFT_CLICK_BLOCK:
-                playerLeftclickMap.replace(player, playerLeftclickMap.get(player) + 3);
+                playerLeftclickMap.replace(player, playerLeftclickMap.get(player) + 8);
             break;
 
             case RIGHT_CLICK_AIR:
             case RIGHT_CLICK_BLOCK:
-                playerRightclickMap.replace(player, playerRightclickMap.get(player) + 3);
+                playerRightclickMap.replace(player, playerRightclickMap.get(player) + 8);
             break;
 
             default: return;
